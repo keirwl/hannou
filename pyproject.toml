@@ -1,17 +1,15 @@
-[tool.poetry]
+[project]
 name = "hannou"
 version = "0.1.0"
-description = "I guess this is my own booru"
-authors = ["Keir Little <me@keirlittle.com>"]
-license = "MIT"
+description = "Add your description here"
 readme = "README"
-package-mode = false
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.1.6",
+    "pillow>=11.1.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-django = "^5.1.2"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "ipdb>=0.13.13",
+]

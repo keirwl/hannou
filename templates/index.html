@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Hannou Images</title>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <form id="input_form" enctype="multipart/form-data" method="post" action="{% url 'index' %}">
+            {% csrf_token %}
+            {{ form.errors }}
+            <input type="file" name="image" id="image_input">
+            <input type="checkbox" id="image_check">
+            <input type="text" name="text" id="text_input"> <input type="submit" value="Upload">
+        </form>
+        <script src="{% static 'script.js' %}"></script>
+        {% for image in object_list %}
+            <img src="{{ image.image_file.url }}" alt="{{ image.tag_list }}" />
+        {% endfor %}
+    </body>
+</html>

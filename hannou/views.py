@@ -4,12 +4,16 @@ import re
 
 from django import forms
 from django.core.files.storage import default_storage
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import generic
 from PIL import Image
 
 from .models import Image as ImageModel, Tag
 
 logger = logging.getLogger("hannou")
+ensure_csrf_cookie = method_decorator(ensure_csrf_cookie)
 
 
 class UploadForm(forms.Form):
@@ -17,7 +21,7 @@ class UploadForm(forms.Form):
     image = forms.ImageField(required=True)
 
 
-class IndexView(generic.FormView, generic.ListView):
+class UploadView(generic.FormView, generic.ListView):
     model = ImageModel
     ordering = "-created_at"
     template_name = "index.html"
@@ -53,3 +57,27 @@ class IndexView(generic.FormView, generic.ListView):
         image.tags.set(tags)
 
         return super().form_valid(form)
+
+
+class IndexView(generic.ListView):
+    model = ImageModel
+    ordering = "-created_at"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return [
+            {
+                "updated_at": q.updated_at,
+                "image_file": q.image_file.url,
+                "tags": [tag.name for tag in q.tags.all()],
+            }
+            for q in queryset
+        ]
+
+    @ensure_csrf_cookie
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+        del context["view"]
+        logger.debug(context)
+        return JsonResponse(context)

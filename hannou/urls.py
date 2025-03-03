@@ -18,10 +18,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from .views import IndexView
+from .views import IndexView, UploadView
 
 urlpatterns = [
-    path("", IndexView.as_view(), name="index"),
+    path("images", IndexView.as_view(), name="index"),
+    path("upload", UploadView.as_view(), name="upload"),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(

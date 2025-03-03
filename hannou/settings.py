@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_vite",
     "hannou",
 ]
 
@@ -147,5 +148,12 @@ LOGGING = {
             'propogate': True,
             'level': 'DEBUG'
         }
+    }
+}
+
+DJANGO_VITE = {
+    'default': {
+        'dev_server_port': 5173,
+        'manifest_path': BASE_DIR / "static/.vite/manifest.json"
     }
 }

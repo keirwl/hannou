@@ -69,15 +69,15 @@ class UploadView(generic.FormView):
 
 class IndexView(generic.ListView):
     model = ImageModel
-    ordering = "-created_at"
+    ordering = "-updated_at"
 
     def get_queryset(self, query=None):
-        logger.debug(query)
         queryset = super().get_queryset()
         if query:
-            qs = [Q(tags__name=name) for name in query if name] # doesn't work!
-            queryset = queryset.filter(*qs).distinct()
-        logger.debug(queryset)
+            tags = Tag.objects.filter(name__in=query)
+            for tag in tags:  # not the most efficient, but n is very small
+                queryset = queryset.filter(tags=tag)
+        queryset = queryset.prefetch_related("tags")
 
         return [
             {
@@ -103,6 +103,7 @@ class IndexView(generic.ListView):
         context = self.get_context_data()
         del context["view"]
         return JsonResponse(context)
+
 
 class VueAppView(generic.TemplateView):
     template_name = "index.html"

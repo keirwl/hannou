@@ -4,7 +4,6 @@ import re
 
 from django import forms
 from django.core.files.storage import default_storage
-from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -21,6 +20,17 @@ ensure_csrf_cookie = method_decorator(ensure_csrf_cookie)
 class UploadForm(forms.Form):
     text = forms.CharField(required=False)
     image = forms.ImageField(required=True)
+
+
+class JsonListView(generic.ListView):
+    def get_object_list(self, *args, **kwargs):
+        return list(self.get_queryset().values())
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_object_list()
+        context = self.get_context_data()
+        del context["view"]
+        return JsonResponse(context)
 
 
 class UploadView(generic.FormView):
@@ -73,12 +83,12 @@ class UploadView(generic.FormView):
         })
 
 
-class IndexView(generic.ListView):
+class ImageView(JsonListView):
     model = ImageModel
     ordering = "-updated_at"
 
-    def get_queryset(self, query=None):
-        queryset = super().get_queryset()
+    def get_object_list(self, query=None):
+        queryset = self.get_queryset()
         if query:
             tags = Tag.objects.filter(name__in=query)
             for tag in tags:  # not the most efficient, but n is very small
@@ -94,21 +104,18 @@ class IndexView(generic.ListView):
             for q in queryset
         ]
 
-    @ensure_csrf_cookie
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
+    def post(self, request, *args, **kwargs):
+        query = re.split(r"[,;\s]+", request.body.decode("utf8"))
+        logger.debug(query)
+        self.object_list = self.get_object_list(query)
         context = self.get_context_data()
         del context["view"]
         return JsonResponse(context)
 
-    @csrf_protect
-    def post(self, request, *args, **kwargs):
-        query = re.split(r"[,;\s]+", request.body.decode("utf8"))
-        logger.debug(query)
-        self.object_list = self.get_queryset(query)
-        context = self.get_context_data()
-        del context["view"]
-        return JsonResponse(context)
+
+class TagView(JsonListView):
+    model = Tag
+    ordering = "name"
 
 
 class VueAppView(generic.TemplateView):

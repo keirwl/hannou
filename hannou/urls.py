@@ -16,14 +16,19 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import include, path
 
 from . import views
 
+api_patterns = [
+    path("images", views.ImageView.as_view(), name="images"),
+    path("tags", views.TagView.as_view(), name="tags"),
+    path("upload", views.UploadView.as_view(), name="upload"),
+]
+
 urlpatterns = [
     path("", views.VueAppView.as_view(), name="index"),
-    path("images", views.IndexView.as_view(), name="images"),
-    path("upload", views.UploadView.as_view(), name="upload"),
+    path("api/", include(api_patterns)),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(

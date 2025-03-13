@@ -59,7 +59,7 @@ export default defineComponent({
    methods: {
      async fetchImages() {
       try {
-        const response = await fetch('/images');
+        const response = await fetch('/api/images');
         if (!response.ok) {
           throw new Error('Failed to fetch images');
         }
@@ -78,7 +78,7 @@ export default defineComponent({
         return;
       }
       try {
-        const response = await fetch('/images', {
+        const response = await fetch('/api/images', {
           method: 'POST',
           headers: {'X-CSRFToken': this.csrfToken},
           body: this.searchQuery,
@@ -107,7 +107,7 @@ export default defineComponent({
         formData.append('image', this.selectedFile);
         formData.append('text', this.text);
 
-        const response = await fetch('/upload', {
+        const response = await fetch('/api/upload', {
           method: 'POST',
           headers: {'X-CSRFToken': this.csrfToken},
           body: formData,

@@ -27,13 +27,9 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue';
+import api from './services/api';
+import type { ImageData } from './types';
 import './style.css'
-
-interface ImageData {
-  image_file: string;
-  updated_at: string;
-  tags: string[];
-}
 
 export default defineComponent({
    data() {
@@ -59,35 +55,15 @@ export default defineComponent({
    methods: {
      async fetchImages() {
       try {
-        const response = await fetch('/api/images');
-        if (!response.ok) {
-          throw new Error('Failed to fetch images');
-        }
-        const data = await response.json();
-        this.images = data.object_list;
-        this.csrfToken = this.getCookie('csrftoken');
+        this.images = await api.fetchImages();
       } catch (e) {
         console.error(e);
         this.errorMessage = (e as Error).message;
       }
     },
     async searchImages() {
-      // queries = this.searchQuery.split(new RegExp("[,;\s]+"));
-      if (this.searchQuery === '') {
-        this.fetchImages();
-        return;
-      }
       try {
-        const response = await fetch('/api/images', {
-          method: 'POST',
-          headers: {'X-CSRFToken': this.csrfToken},
-          body: this.searchQuery,
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch images');
-        }
-        const data = await response.json();
-        this.images = data.object_list;
+        this.images = api.searchImages(this.searchQuery);
         this.csrfToken = this.getCookie('csrftoken');
         this.errorMessage = '';
       } catch (e) {
@@ -107,16 +83,7 @@ export default defineComponent({
         formData.append('image', this.selectedFile);
         formData.append('text', this.text);
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {'X-CSRFToken': this.csrfToken},
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('Upload failed');
-        }
-        const data = await response.json();
+        const data = api.uploadImage(formData);
         this.images.unshift(data.image);
 
         this.selectedFile = null;

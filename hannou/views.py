@@ -26,6 +26,12 @@ class UploadForm(forms.Form):
 class UploadView(generic.FormView):
     form_class = UploadForm
 
+    def form_invalid(self, form):
+        return JsonResponse({
+            "success": False,
+            "errors": form.errors,
+        }, status=400)
+
     def form_valid(self, form):
         logger.debug(f"Uploaded image: {form.cleaned_data['image']}")
         uploaded_file = form.cleaned_data["image"]
@@ -57,12 +63,12 @@ class UploadView(generic.FormView):
         image.tags.set(tags)
 
         return JsonResponse({
-            'success': True,
-            'update': update,
-            'image': {
-                'updated_at': image.updated_at,
-                'image_file': image.image_file.url,
-                'tags': [tag.name for tag in image.tags.all()]
+            "success": True,
+            "update": update,
+            "image": {
+                "updated_at": image.updated_at,
+                "image_file": image.image_file.url,
+                "tags": [tag.name for tag in image.tags.all()]
             }
         })
 

@@ -1,3 +1,5 @@
+static/assets
+static/.vite
 media/
 .python-version
 

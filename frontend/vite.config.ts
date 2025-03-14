@@ -5,6 +5,7 @@ import { resolve } from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: '/static/',
   build: {
       manifest: true,
       outDir: '../static',
@@ -13,5 +14,12 @@ export default defineConfig({
             main: resolve(__dirname, 'src/main.ts')
         }
       }
+  },
+  server: {
+    cors: true,
+    hmr: {
+      host: 'localhost',
+      protocol: 'ws',
+    }
   }
 })

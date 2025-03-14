@@ -27,6 +27,7 @@ SECRET_KEY = "django-insecure-d7ntm8t-a*pj$1@&scf4a=_xlifrxz3wv)iwf@_&m_bxe_-5l$
 DEBUG = True
 
 ALLOWED_HOSTS = []
+INTERNAL_IPS = ["127.0.0.1"]
 
 
 # Application definition
@@ -153,7 +154,8 @@ LOGGING = {
 
 DJANGO_VITE = {
     'default': {
-        'dev_server_port': 5173,
-        'manifest_path': BASE_DIR / "static/.vite/manifest.json"
+        'dev_mode': True,
+        'manifest_path': BASE_DIR / "static/.vite/manifest.json",
+        'static_url_prefix': '',
     }
 }

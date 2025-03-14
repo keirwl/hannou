@@ -63,7 +63,7 @@ export default defineComponent({
     },
     async searchImages() {
       try {
-        this.images = api.searchImages(this.searchQuery);
+        this.images = await api.searchImages(this.searchQuery);
         this.csrfToken = this.getCookie('csrftoken');
         this.errorMessage = '';
       } catch (e) {
@@ -83,15 +83,20 @@ export default defineComponent({
         formData.append('image', this.selectedFile);
         formData.append('text', this.text);
 
-        const data = api.uploadImage(formData);
-        this.images.unshift(data.image);
-
-        this.selectedFile = null;
-        this.text = '';
-        (this.$refs.imageInput as HTMLInputElement).value = '';
-        this.errorMessage = '';
-        const canvas = (this.$refs.thumbnail as HTMLCanvasElement);
-        canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+        const data = await api.uploadImage(formData);
+        if (data.success) {
+          this.images.unshift(data.image);
+          this.selectedFile = null;
+          this.text = '';
+          (this.$refs.imageInput as HTMLInputElement).value = '';
+          this.errorMessage = '';
+          const canvas = (this.$refs.thumbnail as HTMLCanvasElement);
+          canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+        } else {
+          for (var errField in data.errors) {
+            this.errorMessage += `${errField}: ${data.errors[errField].join(', ')}\n`;
+          }
+        }
 
       } catch (e) {
         console.error(e);

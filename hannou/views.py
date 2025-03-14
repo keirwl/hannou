@@ -6,15 +6,13 @@ from django import forms
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from PIL import Image
 
 from .models import Image as ImageModel, Tag
 
 logger = logging.getLogger("hannou")
-csrf_protect = method_decorator(csrf_protect)
-ensure_csrf_cookie = method_decorator(ensure_csrf_cookie)
 
 
 class UploadForm(forms.Form):
@@ -33,6 +31,7 @@ class JsonListView(generic.ListView):
         return JsonResponse(context)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class UploadView(generic.FormView):
     form_class = UploadForm
 
@@ -83,6 +82,7 @@ class UploadView(generic.FormView):
         })
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class ImageView(JsonListView):
     model = ImageModel
     ordering = "-updated_at"

@@ -10,3 +10,16 @@ export interface Tag {
     created_at: string;
     updated_at: string;
 }
+
+export type ApiSuccessResponse = {
+    success: true;
+    updated: boolean;
+    image: ImageData;
+}
+
+export type ApiErrorResponse = {
+    success: false;
+    errors: string[];
+}
+
+export type ApiResponse = ApiSuccessResponse | ApiErrorResponse;

@@ -1,4 +1,4 @@
-import type { ImageData, Tag } from '../types';
+import type { ImageData, Tag, ApiSuccessResponse, ApiErrorResponse, ApiResponse } from '../types';
 
 const API_BASE_URL = '/api';
 
@@ -27,16 +27,21 @@ export default {
         return data.object_list;
     },
 
-    async uploadImage(formData: FormData): Promise<object> {
+    async uploadImage(formData: FormData): Promise<ApiResponse> {
         const response = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         });
 
-        if (!response.ok) {
+        if (response.status == 201) {
+            const data = await response.json()
+            return data as ApiSuccessResponse;
+        } else if (response.status < 500) {
+            const data = await response.json()
+            return data as ApiErrorResponse;
+        } else {
           throw new Error('Upload failed');
         }
-        return await response.json();
     },
 
     async fetchTags(): Promise<Tag[]> {

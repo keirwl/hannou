@@ -17,7 +17,7 @@
 
     <div class="image-gallery">
       <div v-for="image in images" :key="image.image_file" class="image-item">
-        <img :src="image.image_file" :alt="image.tags.join(', ')">
+        <img :src="image.image_file" :alt="image.tags.join(', ')" loading="lazy">
         <div class="image-tags">{{ image.tags.join(', ') }}</div>
       </div>
     </div>
@@ -94,7 +94,7 @@ export default defineComponent({
           canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
         } else {
           for (var errField in data.errors) {
-            this.errorMessage += `${errField}: ${data.errors[errField].join(', ')}\n`;
+            this.errorMessage += `${errField}: ${data.errors[errField]}\n`;
           }
         }
 

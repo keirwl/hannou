@@ -1,7 +1,7 @@
-import type { ImageData, Tag, ApiSuccessResponse, ApiErrorResponse, ApiResponse } from '../types';
+import type { ImageResponse, Tag, ApiSuccessResponse, ApiErrorResponse, ApiResponse } from '../types';
 
 export default {
-    async fetchImages(): Promise<ImageData[]> {
+    async fetchImages(): Promise<ImageResponse[]> {
         const response = await fetch('/api/images');
         if (!response.ok) {
           throw new Error('Failed to fetch images');
@@ -10,7 +10,7 @@ export default {
         return data.object_list;
     },
 
-    async searchImages(query: string): Promise<ImageData[]> {
+    async searchImages(query: string): Promise<ImageResponse[]> {
         const response = await fetch('/api/images', {
             method: 'POST',
             body: query,
@@ -40,7 +40,7 @@ export default {
     },
 
     async fetchTags(): Promise<Tag[]> {
-        const response = await fetch(API_BASE_URL + '/tags');
+        const response = await fetch('/api/tags');
         if (!response.ok) {
           throw new Error('Failed to fetch tags');
         }

@@ -6,6 +6,11 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [vue()],
   base: '/static/',
+  resolve: {
+    alias: {
+      vue: 'vue/dist/vue.esm-bundler.js'
+    }
+  },
   build: {
       manifest: true,
       outDir: '../static',

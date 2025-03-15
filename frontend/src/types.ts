@@ -1,4 +1,4 @@
-export interface ImageData {
+export interface ImageResponse {
   image_file: string;
   updated_at: string;
   tags: string[];
@@ -14,7 +14,7 @@ export interface Tag {
 export type ApiSuccessResponse = {
     success: true;
     updated: boolean;
-    image: ImageData;
+    image: ImageResponse;
 }
 
 export type ApiErrorResponse = {

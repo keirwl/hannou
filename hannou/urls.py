@@ -24,6 +24,8 @@ api_patterns = [
     path("images", views.ImageView.as_view(), name="images"),
     path("tags", views.TagView.as_view(), name="tags"),
     path("upload", views.UploadView.as_view(), name="upload"),
+    path("images/tagless", views.TaglessImageView.as_view(), name="tagless"),
+    path("tags/imageless", views.ImagelessTagView.as_view(), name="imageless"),
 ]
 
 urlpatterns = [

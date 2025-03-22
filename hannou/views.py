@@ -132,9 +132,34 @@ class ImageView(JsonListView):
         return JsonResponse(context)
 
 
+class TaglessImageView(JsonListView):
+    model = ImageModel
+    ordering = "-updated_at"
+
+    def get_object_list(self):
+        queryset = self.get_queryset().filter(tags=None)
+
+        return [
+            {
+                "updated_at": q.updated_at,
+                "image_file": q.image_file.url,
+                "tags": None,
+            }
+            for q in queryset
+        ]
+
+
 class TagView(JsonListView):
     model = Tag
     ordering = "name"
+
+
+class ImagelessTagView(JsonListView):
+    model = Tag
+    ordering = "name"
+
+    def get_object_list(self):
+        return list(self.get_queryset().filter(image=None).values())
 
 
 class VueAppView(generic.TemplateView):

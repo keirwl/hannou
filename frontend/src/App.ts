@@ -1,4 +1,4 @@
-import { defineComponent, type PropType } from 'vue';
+import { defineComponent } from 'vue';
 import { ImageItem } from './components';
 import api from './services/api';
 import type { ImageResponse } from './types';

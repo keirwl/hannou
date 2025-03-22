@@ -1,0 +1,51 @@
+.image-item {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 1;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.image-item img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.image-tags {
+  background: oklch(0.967 0.003 264.542 / 0.8);
+  font-size: 10px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.image-buttons {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  display: flex;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.image-copy, .image-del {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    color: var(--color-gray-950);
+}
+
+.image-copy {
+    background: var(--color-gray-100);
+    color: var(--color-gray-950);
+}
+
+.image-del {
+    background: var(--color-red-400);
+}
+
+.image-copy:hover, .image-del:hover {
+  transform: scale(1.2);
+}

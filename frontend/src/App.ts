@@ -80,12 +80,31 @@ export default defineComponent({
                 this.errorMessage = (e as Error).message;
             }
         },
+        canvasThumbnail(file: File) {
+            const canvas = (this.$refs.thumbnail as HTMLCanvasElement);
+            var reader = new FileReader();
+            reader.onload = (event: ProgressEvent<FileReader>) => {
+                var img = new Image();
+                img.onload = () => {
+                    canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+                if (event.target && event.target.result) {
+                    if (typeof event.target.result === 'string') {
+                        img.src = event.target.result;
+                    } else {
+                        console.error('Expected string result from FileReader')
+                    }
+                }
+            }
+            reader.readAsDataURL(file);
+        },
         handlePaste(event: ClipboardEvent) {
             event.preventDefault();
             const clipboardData = event.clipboardData || (window as any).clipboardData;
             if (clipboardData.files && clipboardData.files.length > 0) {
                 this.selectedFile = clipboardData.files[0];
                 (this.$refs.imageInput as HTMLInputElement).files = clipboardData.files;
+                this.canvasThumbnail(clipboardData.files[0]);
             } else {
                 const text = clipboardData.getData('Text');
                 if (text) {
@@ -97,23 +116,7 @@ export default defineComponent({
             const target = event.target as HTMLInputElement;
             if (target.files && target.files.length > 0) {
                 this.selectedFile = target.files[0];
-
-                const canvas = (this.$refs.thumbnail as HTMLCanvasElement);
-                var reader = new FileReader();
-                reader.onload = (event: ProgressEvent<FileReader>) => {
-                    var img = new Image();
-                    img.onload = () => {
-                        canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    }
-                    if (event.target && event.target.result) {
-                        if (typeof event.target.result === 'string') {
-                            img.src = event.target.result;
-                        } else {
-                            console.error('Expected string result from FileReader')
-                        }
-                    }
-                }
-                reader.readAsDataURL(target.files[0]);
+                this.canvasThumbnail(target.files[0]);
             }
         },
         triggerFileInput() {

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import sys
 
+import pillow_avif as _
 from PIL import Image
 
 # Build paths inside the project like this: BASE_DIR / "subdir".

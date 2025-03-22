@@ -22,6 +22,7 @@ from . import views
 
 api_patterns = [
     path("images", views.ImageView.as_view(), name="images"),
+    path("images/<path:image_url>", views.ImageDeleteView.as_view(), name="delete"),
     path("tags", views.TagView.as_view(), name="tags"),
     path("upload", views.UploadView.as_view(), name="upload"),
     path("images/tagless", views.TaglessImageView.as_view(), name="tagless"),

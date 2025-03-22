@@ -1,3 +1,4 @@
+from django.core.files.storage import default_storage
 from django.db import models
 
 class Tag(models.Model):
@@ -15,3 +16,7 @@ class Image(models.Model):
     @property
     def tag_list(self):
         return ", ".join([tag.name for tag in self.tags.all()])
+
+    def delete(self, **kwargs):
+        default_storage.delete(self.image_file.path)
+        return super().delete(**kwargs)

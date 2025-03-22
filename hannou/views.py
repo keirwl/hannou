@@ -95,7 +95,7 @@ class UploadView(generic.FormView):
             "success": True,
             "image": {
                 "updated_at": image.updated_at,
-                "image_file": image.image_file.url,
+                "image_url": image.image_file.url,
                 "tags": [tag.name for tag in image.tags.all()]
             }
         })
@@ -117,7 +117,7 @@ class ImageView(JsonListView):
         return [
             {
                 "updated_at": q.updated_at,
-                "image_file": q.image_file.url,
+                "image_url": q.image_file.url,
                 "tags": [tag.name for tag in q.tags.all()],
             }
             for q in queryset
@@ -142,11 +142,33 @@ class TaglessImageView(JsonListView):
         return [
             {
                 "updated_at": q.updated_at,
-                "image_file": q.image_file.url,
+                "image_url": q.image_file.url,
                 "tags": None,
             }
             for q in queryset
         ]
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class ImageDeleteView(generic.View):
+    http_method_names = ['delete']
+
+    def delete(self, request, image_url):
+        try:
+            image = ImageModel.objects.get(image_file=image_url)
+        except ImageModel.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "errors": {"image": "not found"},
+            }, status=404)
+        except ImageModel.MultipleObjectsReturned:
+            return JsonResponse({
+                "success": False,
+                "errors": {"image": "MultipleObjectsReturned"},
+            }, status=500)
+
+        image.delete()
+        return JsonResponse({"success": True}, status=204)
 
 
 class TagView(JsonListView):

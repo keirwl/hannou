@@ -1,5 +1,5 @@
 export interface ImageResponse {
-  image_file: string;
+  image_url: string;
   updated_at: string;
   tags: string[];
 }

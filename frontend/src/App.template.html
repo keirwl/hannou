@@ -1,16 +1,18 @@
 <div class="app-container">
     <div class="upload-form">
         <form @submit.prevent="uploadImage">
-        <input type="file" ref="imageInput" id="image_input" @change="handleFileChange">
-        <!-- <label for="image_input"><button type="button">Select file</button></label> -->
-        <canvas id="thumbnail" ref="thumbnail" height="30" width="30"></canvas>
-        <input type="text" v-model="text" id="text_input" placeholder="Enter tags...">
-        <button type="submit" :disabled="!selectedFile">Upload</button>
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <input type="file" ref="imageInput" id="image_input" @change="handleFileChange" hidden>
+            <div class="image-input-container" @click="triggerFileInput">
+                <label for="image_input" class="image-input-button">Select file</label>
+                <canvas id="thumbnail" ref="thumbnail" height="30" width="30"></canvas>
+            </div>
+            <input type="text" v-model="text" id="text_input" placeholder="Enter tags...">
+            <button type="submit" :disabled="!selectedFile">Upload</button>
+            <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         </form>
 
         <div class="search-field">
-        <input class="search-input" type="text" v-model="searchQuery" id="search_input" @input="searchImages" placeholder="Search...">
+            <input class="search-input" type="text" v-model="searchQuery" id="search_input" @input="searchImages" placeholder="Search...">
         </div>
     </div>
 

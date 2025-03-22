@@ -60,7 +60,6 @@ export default defineComponent({
         async searchImages() {
             try {
                 this.images = await api.searchImages(this.searchQuery);
-                this.csrfToken = this.getCookie('csrftoken');
                 this.errorMessage = '';
             } catch (e) {
                 console.error(e);
@@ -135,11 +134,8 @@ export default defineComponent({
                 reader.readAsDataURL(target.files[0]);
             }
         },
-        getCookie(name: string): string {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
-            return '';
+        triggerFileInput() {
+            (this.$refs.imageInput as HTMLInputElement).click();
         }
     },
 })

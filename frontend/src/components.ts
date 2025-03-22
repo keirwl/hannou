@@ -1,4 +1,5 @@
 import { defineComponent, type PropType } from 'vue';
+import api from './services/api';
 import type { ImageResponse } from './types';
 import './components.css'
 
@@ -44,21 +45,27 @@ export const ImageItem = defineComponent({
                 // image already deleted
                 return;
             }
-            const url = '/api/images/' + this.image_file;
-            const response = await fetch(url, {
-                method: 'DELETE',
-            });
-            if (!response.ok) {
-                throw new Error('Failed to delete image');
+            try {
+                await api.deleteImage(this.image_file);
+                this.image.image_url = '';
+                this.image.tags = ['deleted'];
+            } catch (e) {
+                console.error(e);
             }
-            this.image.image_url = '';
-            this.image.tags = ['deleted'];
         },
+        async sendTags() {
+            const tags = (this.$refs.tags as HTMLDivElement).innerText;
+            try {
+                await api.updateImage(this.image_file, tags);
+            } catch (e) {
+                console.error(e);
+            }
+        }
     },
     template: `
      <div class="image-item box">
         <img :src="image.image_url" :alt="image.tags.join(' ')" loading="lazy">
-        <div class="image-tags">{{ image.tags.join(' ') }}</div>
+        <div ref="tags" class="image-tags" contenteditable="plaintext-only" @keydown.enter.prevent="sendTags">{{ image.tags.join(' ') }}</div>
         <div class="image-buttons">
             <div @click="imageCopy" class="image-copy box">⎘</div>
             <div @click="imageDelete" class="image-del box">ⓧ</div>

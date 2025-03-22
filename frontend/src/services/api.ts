@@ -39,6 +39,31 @@ export default {
         }
     },
 
+    async deleteImage(image_file: string): Promise<ApiSuccessResponse> {
+        const url = '/api/images/' + image_file;
+        const response = await fetch(url, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete image');
+        }
+        const data = await response.json()
+        return data as ApiSuccessResponse;
+    },
+
+    async updateImage(image_file: string, tags: string): Promise<ApiSuccessResponse> {
+        const url = '/api/images/' + image_file;
+        const response = await fetch(url, {
+          method: 'POST',
+          body: tags,
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update image');
+        }
+        const data = await response.json()
+        return data as ApiSuccessResponse;
+    },
+
     async fetchTags(): Promise<Tag[]> {
         const response = await fetch('/api/tags');
         if (!response.ok) {

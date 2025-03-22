@@ -98,7 +98,7 @@ class UploadView(generic.FormView):
                 "image_url": image.image_file.url,
                 "tags": [tag.name for tag in image.tags.all()]
             }
-        })
+        }, status=201)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -150,8 +150,42 @@ class TaglessImageView(JsonListView):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class ImageDeleteView(generic.View):
-    http_method_names = ['delete']
+class ImageEditView(generic.View):
+    http_method_names = ["post", "delete"]
+
+    def post(self, request, image_url):
+        try:
+            image = ImageModel.objects.get(image_file=image_url)
+        except ImageModel.DoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "errors": {"image": "not found"},
+            }, status=404)
+        except ImageModel.MultipleObjectsReturned:
+            return JsonResponse({
+                "success": False,
+                "errors": {"image": "MultipleObjectsReturned"},
+            }, status=500)
+
+        text = re.split(r"[,;\s]+", request.body.decode("utf8"))
+        logger.debug(f"Form text: {text}")
+        try:
+            with transaction.atomic():
+                tags = Tag.objects.bulk_create(
+                    [Tag(name=t) for t in text if t],
+                    update_conflicts=True,
+                    update_fields=["updated_at"],
+                    unique_fields=["name"],
+                )
+                logger.debug(f"Created/updated tags: {','.join(t.name for t in tags)}")
+                image.tags.set(tags)
+        except DatabaseError as e:
+            return JsonResponse({
+                "success": False,
+                "errors": {"image": repr(e)},
+            }, status=400)
+
+        return JsonResponse({"success": True}, status=200)
 
     def delete(self, request, image_url):
         try:
@@ -168,7 +202,7 @@ class ImageDeleteView(generic.View):
             }, status=500)
 
         image.delete()
-        return JsonResponse({"success": True}, status=204)
+        return JsonResponse({"success": True}, status=200)
 
 
 class TagView(JsonListView):

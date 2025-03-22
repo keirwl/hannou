@@ -13,7 +13,6 @@ export interface Tag {
 
 export type ApiSuccessResponse = {
     success: true;
-    updated: boolean;
     image: ImageResponse;
 }
 

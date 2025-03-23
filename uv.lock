@@ -111,6 +111,7 @@ dependencies = [
     { name = "django-vite" },
     { name = "pillow" },
     { name = "pillow-avif-plugin" },
+    { name = "uwsgi" },
 ]
 
 [package.dev-dependencies]
@@ -125,6 +126,7 @@ requires-dist = [
     { name = "django-vite", specifier = ">=3.1.0" },
     { name = "pillow", specifier = ">=11.1.0" },
     { name = "pillow-avif-plugin", specifier = ">=1.5.0" },
+    { name = "uwsgi", specifier = ">=2.0.28" },
 ]
 
 [package.metadata.requires-dev]
@@ -361,6 +363,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/43/0f/fa4723f22942480be
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0f/dd/84f10e23edd882c6f968c21c2434fe67bd4a528967067515feca9e611e5e/tzdata-2025.1-py2.py3-none-any.whl", hash = "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639", size = 346762 },
 ]
+
+[[package]]
+name = "uwsgi"
+version = "2.0.28"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/c2/d58480aadc9a1f420dd96fc43cf0dcd8cb5ededb95cab53743529c23b6cd/uwsgi-2.0.28.tar.gz", hash = "sha256:79ca1891ef2df14508ab0471ee8c0eb94bd2d51d03f32f90c4bbe557ab1e99d0", size = 816212 }
 
 [[package]]
 name = "wcwidth"

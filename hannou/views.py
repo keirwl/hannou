@@ -8,7 +8,6 @@ from django.core.files.storage import default_storage
 from django.db import DatabaseError, transaction
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from PIL import Image
 
@@ -33,7 +32,6 @@ class JsonListView(generic.ListView):
         return JsonResponse(context)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class UploadView(generic.FormView):
     form_class = UploadForm
 
@@ -101,7 +99,6 @@ class UploadView(generic.FormView):
         }, status=201)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class ImageView(JsonListView):
     model = ImageModel
     ordering = "-updated_at"
@@ -149,7 +146,6 @@ class TaglessImageView(JsonListView):
         ]
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class ImageEditView(generic.View):
     http_method_names = ["post", "delete"]
 

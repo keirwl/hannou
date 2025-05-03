@@ -12,7 +12,7 @@ export const ImageItem = defineComponent({
     },
     data: function() {
         return {
-            image_file: this.image.image_url.split("/")[2],
+            image_file: this.image.image_url.split('/').pop() ?? '',
         }
     },
     methods: {
@@ -54,12 +54,18 @@ export const ImageItem = defineComponent({
             }
         },
         async sendTags() {
-            const tags = (this.$refs.tags as HTMLDivElement).innerText;
+            if (this.image.image_url === '') {
+                // image already deleted
+                return;
+            }
+            const elem = this.$refs.tags as HTMLDivElement;
+            const tags = elem.innerText;
             try {
                 await api.updateImage(this.image_file, tags);
             } catch (e) {
                 console.error(e);
             }
+            elem.blur();
         }
     },
     template: `
